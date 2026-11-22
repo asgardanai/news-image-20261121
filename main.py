@@ -35,15 +35,21 @@ def main():
     os.makedirs(out_dir, exist_ok=True)
     target = os.path.join(out_dir, "entry.png")
 
+    if not os.path.isfile(source):
+        print(f"error: entry image not found: {source}", file=sys.stderr)
+        return 1
+
     shutil.copyfile(source, target)
 
-    if digest(source) != digest(target):
+    source_digest = digest(source)
+    target_digest = digest(target)
+    if source_digest != target_digest:
         print("self-check FAILED: copy differs from source", file=sys.stderr)
         return 1
     if os.path.getsize(source) != os.path.getsize(target):
         print("self-check FAILED: size mismatch after copy", file=sys.stderr)
         return 1
-    print(f"entry.png written to {target} (sha256 {digest(target)})")
+    print(f"entry.png written to {target} (sha256 {target_digest})")
     return 0
 
 
